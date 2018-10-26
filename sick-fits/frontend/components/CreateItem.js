@@ -6,7 +6,7 @@ import Form from './styles/Form';
 import formatMoney from '../lib/formatMoney';
 import Error from './ErrorMessage';
 import getConfig from 'next/config';
-const { serverRuntimeConfig, publicRuntimeConfig } = getConfig();
+const { publicRuntimeConfig } = getConfig();
 
 const CREATE_ITEM_MUTATION = gql`
   mutation CREATE_ITEM_MUTATION(
@@ -43,7 +43,6 @@ class CreateItem extends Component {
   };
 
   uploadFile = async e => {
-    console.log('uploading file...');
     const files = e.target.files;
     const data = new FormData();
     data.append('file', files[0]);
@@ -54,7 +53,6 @@ class CreateItem extends Component {
       body: data
     });
     const file = await res.json();
-    console.log(file);
     this.setState({
       image: file.secure_url,
       largeImage: file.eager[0].secure_url
