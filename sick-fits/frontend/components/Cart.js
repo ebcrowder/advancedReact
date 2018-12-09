@@ -1,6 +1,7 @@
 import React from 'react';
 import { Query, Mutation } from 'react-apollo';
 import gql from 'graphql-tag';
+import { adopt } from 'react-adopt';
 import User from './User';
 import CartStyles from './styles/CartStyles';
 import Supreme from './styles/Supreme';
@@ -9,7 +10,7 @@ import SickButton from './styles/SickButton';
 import CartItem from './CartItem';
 import calcTotalPrice from '../lib/calcTotalPrice';
 import formatMoney from '../lib/formatMoney';
-import { adopt } from 'react-adopt';
+import TakeMyMoney from './TakeMyMoney';
 
 const LOCAL_STATE_QUERY = gql`
   query {
@@ -22,7 +23,7 @@ const TOGGLE_CART_MUTATION = gql`
     toggleCart @client
   }
 `;
-
+/* eslint-disable */
 const Composed = adopt({
   user: ({ render }) => <User>{render}</User>,
   toggleCart: ({ render }) => (
@@ -30,6 +31,7 @@ const Composed = adopt({
   ),
   localState: ({ render }) => <Query query={LOCAL_STATE_QUERY}>{render}</Query>
 });
+/* eslint-enable */
 
 const Cart = () => (
   <Composed>
@@ -44,8 +46,8 @@ const Cart = () => (
             </CloseButton>
             <Supreme>{me.name}'s Cart</Supreme>
             <p>
-              You Have {me.cart.length} Item
-              {me.cart.length === 1 ? '' : 's'} in your cart.
+              You Have {me.cart.length} Item{me.cart.length === 1 ? '' : 's'} in
+              your cart.
             </p>
           </header>
           <ul>
@@ -55,7 +57,11 @@ const Cart = () => (
           </ul>
           <footer>
             <p>{formatMoney(calcTotalPrice(me.cart))}</p>
-            <SickButton>Checkout</SickButton>
+            {me.cart.length && (
+              <TakeMyMoney>
+                <SickButton>Checkout</SickButton>
+              </TakeMyMoney>
+            )}
           </footer>
         </CartStyles>
       );
